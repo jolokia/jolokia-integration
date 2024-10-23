@@ -1,0 +1,11 @@
+= Jolokia Integration
+
+This project includes modules to be used within servers that use https://github.com/jolokia/jolokia[Jolokia Core] as JVM agent.
+
+https://github.com/jolokia/jolokia[Jolokia Core] provides extension points and extensions can provide additional Jolokia services for various tasks. To keep Jolokia Core independent on any project that uses it, https://github.com/jolokia/jolokia-integration[Jolokia Integration] provides server-specific code that can integration with Jolokia Core.
+
+== Original use case
+
+https://github.com/apache/activemq-artemis[Apache Artemis] uses Jolokia with https://hawt.io[HawtIO] console, but it may also use it as JVM Agent.
+
+When using many JMS queues (which is typical in real-world scenarios), Jolokia `list()` operation may respond with hundreds or tens of thousands `MBeanInfo` object for the queues. With `org.jolokia.service.jmx.api.CacheKeyProvider` Jolokia service (discovered from `/META-INF/jolokia/services`) common `MBeanInfo` data can be cached and referenced (within JSON response), trimming down response since by 100x or more.
