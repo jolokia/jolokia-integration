@@ -58,6 +58,8 @@
 
     <modules>
         <module>bom</module>
+
+        <module>integrations/artemis</module>
     </modules>
 
     <scm>
@@ -111,10 +113,48 @@
         <plugin.mycila.license-maven-plugin>4.6</plugin.mycila.license-maven-plugin>
 
         <!-- versions of dependencies -->
+        <version.org.apache.activemq.artemis-server>2.37.0</version.org.apache.activemq.artemis-server>
+        <version.org.jolokia.server-core>2.1.2-SNAPSHOT</version.org.jolokia.server-core>
+
         <!-- versions of test dependencies -->
+        <version.org.junit.jupiter>5.11.3</version.org.junit.jupiter>
     </properties>
 
-    <dependencyManagement />
+    <dependencyManagement>
+        <dependencies>
+
+            <dependency>
+                <groupId>org.jolokia</groupId>
+                <artifactId>jolokia-server-core</artifactId>
+                <version>${version.org.jolokia.server-core}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jolokia</groupId>
+                <artifactId>jolokia-service-jmx</artifactId>
+                <version>${version.org.jolokia.server-core}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.activemq</groupId>
+                <artifactId>artemis-server</artifactId>
+                <version>${version.org.apache.activemq.artemis-server}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.junit.jupiter</groupId>
+                <artifactId>junit-jupiter-api</artifactId>
+                <version>${version.org.junit.jupiter}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.junit.jupiter</groupId>
+                <artifactId>junit-jupiter-engine</artifactId>
+                <version>${version.org.junit.jupiter}</version>
+                <scope>test</scope>
+            </dependency>
+
+        </dependencies>
+    </dependencyManagement>
 
     <dependencies />
 
@@ -275,12 +315,15 @@
 
             <!-- Other plugins -->
             <plugin>
-                <!-- Run with: mvn com.mycila:license-maven-plugin:4.6:format -->
-                <!-- Run with: mvn com.mycila:license-maven-plugin:4.6:check -->
+                <!-- Run with: mvn com.mycila:license-maven-plugin:4.6:format -N -->
+                <!-- Run with: mvn com.mycila:license-maven-plugin:4.6:check -N -->
                 <groupId>com.mycila</groupId>
                 <artifactId>license-maven-plugin</artifactId>
                 <configuration>
                     <aggregate>true</aggregate>
+                    <mapping>
+                        <services>SCRIPT_STYLE</services>
+                    </mapping>
                     <licenseSets>
                         <licenseSet>
                             <header>HEADER.txt</header>
@@ -289,6 +332,7 @@
                                 <include>**/*.java</include>
                                 <include>**/*.properties</include>
                                 <include>**/*.xml</include>
+                                <include>**/META-INF/jolokia/*</include>
                             </includes>
                         </licenseSet>
                     </licenseSets>
