@@ -15,17 +15,42 @@
  */
 package org.jolokia.integration.artemis;
 
+import javax.management.MBeanInfo;
+import javax.management.ObjectName;
+
+import org.apache.activemq.artemis.core.server.ActiveMQServer;
+import org.jolokia.json.JSONObject;
+import org.jolokia.server.core.service.api.JolokiaContext;
+import org.jolokia.server.core.service.container.ContainerLocator;
 import org.jolokia.service.jmx.handler.list.DataUpdater;
 
 public class ArtemisDataUpdater extends DataUpdater {
+
+    private ActiveMQServer server;
+    private String brokerDomain;
 
     public ArtemisDataUpdater(int pOrderId) {
         super(pOrderId);
     }
 
     @Override
+    public void init(JolokiaContext pJolokiaContext) {
+        super.init(pJolokiaContext);
+
+        server = pJolokiaContext.getService(ContainerLocator.class).container(ActiveMQServer.class);
+        if (server != null) {
+            brokerDomain = server.getConfiguration().getJMXDomain();
+        }
+    }
+
+    @Override
     public String getKey() {
         return "canInvoke";
+    }
+
+    @Override
+    public JSONObject extractData(ObjectName pObjectName, MBeanInfo pMBeanInfo, String pFilter) {
+        return super.extractData(pObjectName, pMBeanInfo, pFilter);
     }
 
 }

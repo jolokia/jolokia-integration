@@ -17,12 +17,24 @@ package org.jolokia.integration.artemis;
 
 import javax.management.ObjectInstance;
 
+import org.apache.activemq.artemis.core.server.ActiveMQServer;
+import org.jolokia.server.core.service.api.JolokiaContext;
+import org.jolokia.server.core.service.container.ContainerLocator;
 import org.jolokia.service.jmx.api.CacheKeyProvider;
 
 public class ArtemisCacheKeyProvider extends CacheKeyProvider {
 
+    private ActiveMQServer server;
+
     public ArtemisCacheKeyProvider(int pOrderId) {
         super(pOrderId);
+    }
+
+    @Override
+    public void init(JolokiaContext pJolokiaContext) {
+        super.init(pJolokiaContext);
+
+        this.server = pJolokiaContext.getService(ContainerLocator.class).container(ActiveMQServer.class);
     }
 
     @Override
