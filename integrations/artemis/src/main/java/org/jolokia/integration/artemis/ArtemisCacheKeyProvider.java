@@ -15,9 +15,13 @@
  */
 package org.jolokia.integration.artemis;
 
+import java.util.Hashtable;
 import javax.management.ObjectInstance;
+import javax.management.ObjectName;
 
+import org.apache.activemq.artemis.api.core.management.ResourceNames;
 import org.apache.activemq.artemis.core.server.ActiveMQServer;
+import org.apache.activemq.artemis.core.server.management.HawtioSecurityControl;
 import org.jolokia.server.core.service.api.JolokiaContext;
 import org.jolokia.server.core.service.container.ContainerLocator;
 import org.jolokia.service.jmx.api.CacheKeyProvider;
@@ -25,6 +29,8 @@ import org.jolokia.service.jmx.api.CacheKeyProvider;
 public class ArtemisCacheKeyProvider extends CacheKeyProvider {
 
     private ActiveMQServer server;
+    private HawtioSecurityControl control;
+    private String brokerDomain;
 
     public ArtemisCacheKeyProvider(int pOrderId) {
         super(pOrderId);
@@ -34,11 +40,47 @@ public class ArtemisCacheKeyProvider extends CacheKeyProvider {
     public void init(JolokiaContext pJolokiaContext) {
         super.init(pJolokiaContext);
 
-        this.server = pJolokiaContext.getService(ContainerLocator.class).container(ActiveMQServer.class);
+        server = pJolokiaContext.getService(ContainerLocator.class).container(ActiveMQServer.class);
+        if (server != null) {
+            brokerDomain = server.getConfiguration().getJMXDomain();
+            control = (HawtioSecurityControl) server.getManagementService().getResource(ResourceNames.MANAGEMENT_SECURITY);
+        }
     }
 
     @Override
     public String determineKey(ObjectInstance objectInstance) {
+        ObjectName oName = objectInstance.getObjectName();
+
+        // https://activemq.apache.org/components/artemis/documentation/latest/management.html
+        //
+        // org.apache.activemq.artemis.api.core.management.ObjectNameBuilder contains patterns for building ObjectNames for different kind of MBeans (_controls_).
+        //
+        // Address:            <domain>:broker=<name>,component=addresses,address=<address>
+        // Queue:              <domain>:broker=<name>,component=addresses,address=<address>,subcomponent=queues,routing-type=<routing>,queue=<name>
+        // Divert:             <domain>:broker=<name>,component=addresses,address=<address>,subcomponent=diverts,divert=<name>
+        // Server:             <domain>:broker=<name>
+        // Acceptor:           <domain>:broker=<name>,component=acceptors,name=<name>
+        // Broadcast group:    <domain>:broker=<name>,component=broadcast-groups,name=<name>
+        // Bridge:             <domain>:broker=<name>,component=bridges,name=<name>
+        // Cluster connection: <domain>:broker=<name>,component=cluster-connnections,name=<name>
+        // Connection router:  <domain>:broker=<name>,component=connection-routers,name=<name>
+        // Security:           hawtio:type=security,area=jmx,name=ArtemisJMXSecurity
+
+        if (brokerDomain.equals(oName.getDomain())) {
+            Hashtable<String, String> keys = oName.getKeyPropertyList();
+            if ("addresses".equals(keys.get("component"))) {
+                if ("queues".equals(keys.get("subcomponent"))) {
+                    // a queue - org.apache.activemq.artemis.api.core.management.QueueControl
+                    return "artemis.queue";
+                } else {
+                    // an address - org.apache.activemq.artemis.api.core.management.AddressControl
+                    return "artemis.address";
+                }
+            } else if ("acceptors".equals(keys.get("component"))) {
+                // org.apache.activemq.artemis.api.core.management.AcceptorControl
+                return "artemis.acceptor";
+            }
+        }
         return null;
     }
 
