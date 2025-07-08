@@ -117,7 +117,7 @@
         <version.org.jolokia.server-core>2.2.9</version.org.jolokia.server-core>
 
         <!-- versions of test dependencies -->
-        <version.org.junit.jupiter>5.11.3</version.org.junit.jupiter>
+        <version.org.junit.jupiter>5.13.3</version.org.junit.jupiter>
     </properties>
 
     <dependencyManagement>
