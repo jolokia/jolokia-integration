@@ -22,7 +22,7 @@
 
     <groupId>org.jolokia.integration</groupId>
     <artifactId>jolokia-integration-parent</artifactId>
-    <version>0.5.0</version>
+    <version>0.5.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>${project.artifactId}</name>
@@ -65,7 +65,7 @@
     <scm>
         <connection>scm:git:git@github.com:jolokia/jolokia-integration.git</connection>
         <developerConnection>scm:git:git@github.com:jolokia/jolokia-integration.git</developerConnection>
-        <tag>v0.5.0</tag>
+        <tag>main</tag>
         <url>https://github.com/jolokia/jolokia-integration</url>
     </scm>
 
