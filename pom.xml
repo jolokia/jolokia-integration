@@ -111,6 +111,7 @@
 
         <!-- versions of other plugins -->
         <plugin.mycila.license-maven-plugin>4.6</plugin.mycila.license-maven-plugin>
+        <plugin.sonatype.central-publishing-maven-plugin>0.8.0</plugin.sonatype.central-publishing-maven-plugin>
 
         <!-- versions of dependencies -->
         <version.org.apache.activemq.artemis-server>2.41.0</version.org.apache.activemq.artemis-server>
@@ -125,13 +126,10 @@
 
             <dependency>
                 <groupId>org.jolokia</groupId>
-                <artifactId>jolokia-server-core</artifactId>
+                <artifactId>jolokia-bom</artifactId>
                 <version>${version.org.jolokia.server-core}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.jolokia</groupId>
-                <artifactId>jolokia-service-jmx</artifactId>
-                <version>${version.org.jolokia.server-core}</version>
+                <type>pom</type>
+                <scope>import</scope>
             </dependency>
 
             <dependency>
@@ -290,6 +288,11 @@
                     <artifactId>license-maven-plugin</artifactId>
                     <version>${plugin.mycila.license-maven-plugin}</version>
                 </plugin>
+                <plugin>
+                    <groupId>org.sonatype.central</groupId>
+                    <artifactId>central-publishing-maven-plugin</artifactId>
+                    <version>${plugin.sonatype.central-publishing-maven-plugin}</version>
+                </plugin>
             </plugins>
         </pluginManagement>
         <plugins>
@@ -336,6 +339,15 @@
                             </includes>
                         </licenseSet>
                     </licenseSets>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.sonatype.central</groupId>
+                <artifactId>central-publishing-maven-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                    <!-- you need <server> with such <id> in ~/.m2/repository -->
+                    <publishingServerId>ossrh-central</publishingServerId>
                 </configuration>
             </plugin>
         </plugins>

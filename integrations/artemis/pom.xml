@@ -43,6 +43,11 @@
         </dependency>
         <dependency>
             <groupId>org.jolokia</groupId>
+            <artifactId>jolokia-server-detector</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jolokia</groupId>
             <artifactId>jolokia-service-jmx</artifactId>
             <scope>provided</scope>
         </dependency>

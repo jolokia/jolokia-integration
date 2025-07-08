@@ -35,4 +35,14 @@
 
     <description>Jolokia Integration :: BOM</description>
 
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.jolokia.integration</groupId>
+                <artifactId>jolokia-integration-artemis</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
 </project>
