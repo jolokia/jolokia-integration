@@ -22,9 +22,8 @@ import java.util.stream.Collectors;
 import javax.management.MBeanInfo;
 import javax.management.ObjectName;
 
-import org.apache.activemq.artemis.api.core.management.ResourceNames;
 import org.apache.activemq.artemis.core.server.ActiveMQServer;
-import org.apache.activemq.artemis.core.server.management.HawtioSecurityControl;
+import org.apache.activemq.artemis.core.server.management.GuardInvocationHandler;
 import org.jolokia.json.JSONArray;
 import org.jolokia.json.JSONObject;
 import org.jolokia.server.core.service.api.JolokiaContext;
@@ -37,8 +36,7 @@ import org.jolokia.service.jmx.handler.list.DataUpdater;
  */
 public class ArtemisDataUpdater extends DataUpdater {
 
-    private ActiveMQServer server;
-    private HawtioSecurityControl control;
+    private GuardInvocationHandler guard;
     private String brokerDomain;
 
     public ArtemisDataUpdater(int pOrderId) {
@@ -49,10 +47,10 @@ public class ArtemisDataUpdater extends DataUpdater {
     public void init(JolokiaContext pJolokiaContext) {
         super.init(pJolokiaContext);
 
-        server = pJolokiaContext.getService(ContainerLocator.class).container(ActiveMQServer.class);
-        if (server != null) {
-            brokerDomain = server.getConfiguration().getJMXDomain();
-            control = (HawtioSecurityControl) server.getManagementService().getResource(ResourceNames.MANAGEMENT_SECURITY);
+        ContainerLocator locator = pJolokiaContext.getService(ContainerLocator.class);
+        if (locator != null) {
+            guard = locator.locate(GuardInvocationHandler.class);
+            brokerDomain = ArtemisUtils.brokerDomain(guard, locator.locate(ActiveMQServer.class));
         }
     }
 
@@ -66,15 +64,16 @@ public class ArtemisDataUpdater extends DataUpdater {
     public void update(Map<String, Object> pMap, ObjectName pObjectName, MBeanInfo pMBeanInfo, Deque<String> pPathStack) {
         verifyThatPathIsEmpty(pPathStack);
 
-        if (brokerDomain.equals(pObjectName.getDomain())) {
+        if (pObjectName.getDomain().equals(brokerDomain)) {
             try {
-                pMap.put("canInvoke", control.canInvoke(pObjectName.getCanonicalName()));
+                // check for entire MBean
+                pMap.put("canInvoke", guard.canInvoke(pObjectName.getCanonicalName(), null));
             } catch (Exception e) {
                 pMap.put("canInvoke", false);
             }
             grantAccess(pObjectName, pMap, (mbean, signature) -> {
                 try {
-                    return control.canInvoke(pObjectName.getCanonicalName(), signature);
+                    return guard.canInvoke(pObjectName.getCanonicalName(), signature);
                 } catch (Exception e) {
                     return false;
                 }
@@ -91,7 +90,7 @@ public class ArtemisDataUpdater extends DataUpdater {
         if (pMap.containsKey("op")) {
             // "op" is a map, where the key is operation name and there are two kinds of values:
             //  - an object with keys: args, ret, desc
-            //  - an array of the above objects in case of overriden methods
+            //  - an array of the above objects in case of overridden methods
             JSONObject operations = (JSONObject) pMap.get("op");
             if (operations != null) {
                 JSONObject opByString = new JSONObject();
@@ -104,7 +103,7 @@ public class ArtemisDataUpdater extends DataUpdater {
                         JSONObject op = (JSONObject) operation;
                         configureOperation(pObjectName, opByString, name, op, canInvoke);
                     } else if (operation instanceof JSONArray) {
-                        // overriden operations
+                        // overridden operations
                         JSONArray ops = (JSONArray) operation;
                         for (Object o : ops) {
                             JSONObject op = (JSONObject) o;

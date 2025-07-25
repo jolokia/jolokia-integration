@@ -19,17 +19,14 @@ import java.util.Hashtable;
 import javax.management.ObjectInstance;
 import javax.management.ObjectName;
 
-import org.apache.activemq.artemis.api.core.management.ResourceNames;
 import org.apache.activemq.artemis.core.server.ActiveMQServer;
-import org.apache.activemq.artemis.core.server.management.HawtioSecurityControl;
+import org.apache.activemq.artemis.core.server.management.GuardInvocationHandler;
 import org.jolokia.server.core.service.api.JolokiaContext;
 import org.jolokia.server.core.service.container.ContainerLocator;
 import org.jolokia.service.jmx.api.CacheKeyProvider;
 
 public class ArtemisCacheKeyProvider extends CacheKeyProvider {
 
-    private ActiveMQServer server;
-    private HawtioSecurityControl control;
     private String brokerDomain;
 
     public ArtemisCacheKeyProvider(int pOrderId) {
@@ -40,10 +37,11 @@ public class ArtemisCacheKeyProvider extends CacheKeyProvider {
     public void init(JolokiaContext pJolokiaContext) {
         super.init(pJolokiaContext);
 
-        server = pJolokiaContext.getService(ContainerLocator.class).container(ActiveMQServer.class);
-        if (server != null) {
-            brokerDomain = server.getConfiguration().getJMXDomain();
-            control = (HawtioSecurityControl) server.getManagementService().getResource(ResourceNames.MANAGEMENT_SECURITY);
+        ContainerLocator locator = pJolokiaContext.getService(ContainerLocator.class);
+        if (locator != null) {
+            GuardInvocationHandler guard = locator.locate(GuardInvocationHandler.class);
+            ActiveMQServer server = locator.locate(ActiveMQServer.class);
+            brokerDomain = ArtemisUtils.brokerDomain(guard, server);
         }
     }
 
@@ -62,11 +60,11 @@ public class ArtemisCacheKeyProvider extends CacheKeyProvider {
         // Acceptor:           <domain>:broker=<name>,component=acceptors,name=<name>
         // Broadcast group:    <domain>:broker=<name>,component=broadcast-groups,name=<name>
         // Bridge:             <domain>:broker=<name>,component=bridges,name=<name>
-        // Cluster connection: <domain>:broker=<name>,component=cluster-connnections,name=<name>
+        // Cluster connection: <domain>:broker=<name>,component=cluster-connections,name=<name>
         // Connection router:  <domain>:broker=<name>,component=connection-routers,name=<name>
         // Security:           hawtio:type=security,area=jmx,name=ArtemisJMXSecurity
 
-        if (brokerDomain.equals(oName.getDomain())) {
+        if (oName.getDomain().equals(brokerDomain)) {
             Hashtable<String, String> keys = oName.getKeyPropertyList();
             if ("addresses".equals(keys.get("component"))) {
                 if ("queues".equals(keys.get("subcomponent"))) {
