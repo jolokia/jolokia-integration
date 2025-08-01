@@ -99,7 +99,7 @@
         <plugin.maven-antrun-plugin>3.1.0</plugin.maven-antrun-plugin>
         <plugin.maven-assembly-plugin>3.7.1</plugin.maven-assembly-plugin>
         <plugin.maven-dependency-plugin>3.8.1</plugin.maven-dependency-plugin>
-        <plugin.maven-enforcer-plugin>3.6.0</plugin.maven-enforcer-plugin>
+        <plugin.maven-enforcer-plugin>3.6.!</plugin.maven-enforcer-plugin>
         <plugin.maven-gpg-plugin>3.2.8</plugin.maven-gpg-plugin>
         <plugin.maven-invoker-plugin>3.9.1</plugin.maven-invoker-plugin>
         <plugin.maven-release-plugin>3.1.1</plugin.maven-release-plugin>
@@ -118,7 +118,7 @@
         <version.org.jolokia.server-core>2.3.0</version.org.jolokia.server-core>
 
         <!-- versions of test dependencies -->
-        <version.org.junit.jupiter>5.13.3</version.org.junit.jupiter>
+        <version.org.junit.jupiter>5.13.4</version.org.junit.jupiter>
     </properties>
 
     <dependencyManagement>
