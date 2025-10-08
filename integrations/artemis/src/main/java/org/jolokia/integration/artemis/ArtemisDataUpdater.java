@@ -16,6 +16,7 @@
 package org.jolokia.integration.artemis;
 
 import java.util.Deque;
+import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
@@ -26,9 +27,9 @@ import org.apache.activemq.artemis.core.server.ActiveMQServer;
 import org.apache.activemq.artemis.core.server.management.GuardInvocationHandler;
 import org.jolokia.json.JSONArray;
 import org.jolokia.json.JSONObject;
+import org.jolokia.server.core.service.api.DataUpdater;
 import org.jolokia.server.core.service.api.JolokiaContext;
 import org.jolokia.server.core.service.container.ContainerLocator;
-import org.jolokia.service.jmx.handler.list.DataUpdater;
 
 /**
  * A {@link DataUpdater} for Artemis which immediately adds RBAC information, so Hawtio doesn't have to prepare
@@ -57,7 +58,14 @@ public class ArtemisDataUpdater extends DataUpdater {
     @Override
     public String getKey() {
         // not used, because we override entire update() method
-        return null;
+        return "artemis";
+    }
+
+    @Override
+    public JSONObject getInfo() {
+        JSONObject info = new JSONObject();
+        info.put("annotations", new JSONArray(List.of("rbac")));
+        return info;
     }
 
     @Override

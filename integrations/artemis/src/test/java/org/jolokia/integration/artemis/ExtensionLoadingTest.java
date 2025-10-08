@@ -19,12 +19,12 @@ import java.util.SortedSet;
 
 import org.jolokia.server.core.config.Configuration;
 import org.jolokia.server.core.config.StaticConfiguration;
+import org.jolokia.server.core.service.api.DataUpdater;
 import org.jolokia.server.core.service.api.LogHandler;
 import org.jolokia.server.core.service.impl.ClasspathServiceCreator;
 import org.jolokia.server.core.service.impl.JolokiaServiceManagerImpl;
 import org.jolokia.server.core.service.impl.StdoutLogHandler;
 import org.jolokia.service.jmx.api.CacheKeyProvider;
-import org.jolokia.service.jmx.handler.list.DataUpdater;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
