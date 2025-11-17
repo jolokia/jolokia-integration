@@ -121,6 +121,35 @@ public class ArtemisDataUpdater extends DataUpdater {
                 }
             }
         }
+        if (pMap.containsKey("attr")) {
+            JSONObject attributes = (JSONObject) pMap.get("attr");
+            if (attributes != null) {
+                for (Map.Entry<String, Object> entry : attributes.entrySet()) {
+                    String name = entry.getKey();
+                    Object attribute = entry.getValue();
+                    if (attribute instanceof JSONObject) {
+                        // an MBean attribute is declared in Artemis RBAC as a method (setter/getter)
+                        // but we skip the signature
+                        // see
+                        JSONObject at = (JSONObject) attribute;
+                        Object isV = at.get("is");
+                        boolean isIs = isV instanceof Boolean && (boolean) isV;
+                        Object rV = at.get("r");
+                        boolean r = rV instanceof Boolean && (boolean) rV;
+                        Object wV = at.get("w");
+                        boolean w = wV instanceof Boolean && (boolean) wV;
+                        String getterName = (isIs ? "is" : "get") + name;
+                        String setterName = "set" + name;
+                        if (r) {
+                            at.put("canRead", canInvoke.apply(pObjectName, getterName));
+                        }
+                        if (w) {
+                            at.put("canWrite", canInvoke.apply(pObjectName, setterName));
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private void configureOperation(ObjectName pObjectName, JSONObject opByString, String name, JSONObject op, BiFunction<ObjectName, String, Boolean> canInvoke) {
@@ -129,7 +158,9 @@ public class ArtemisDataUpdater extends DataUpdater {
         op.put("canInvoke", allowed);
         // io.hawt.osgi.jmx.RBACDecorator#prepareKarafRbacInvocations() in 2.x:
         // > ! no need to copy relevant map for "op['opname']" - hawtio uses only 'canInvoke' property
-        opByString.put(transformedName, Map.of("canInvoke", allowed));
+        if (opByString != null) {
+            opByString.put(transformedName, Map.of("canInvoke", allowed));
+        }
     }
 
     private String transformName(String name, Object args) {
