@@ -115,7 +115,7 @@
 
         <!-- versions of dependencies -->
         <version.org.apache.activemq.artemis-server>2.43.0</version.org.apache.activemq.artemis-server>
-        <version.org.jolokia.server-core>2.4.1</version.org.jolokia.server-core>
+        <version.org.jolokia.server-core>2.4.2</version.org.jolokia.server-core>
 
         <!-- versions of test dependencies -->
         <version.org.junit.jupiter>5.14.0</version.org.junit.jupiter>
