@@ -60,6 +60,7 @@
         <module>bom</module>
 
         <module>integrations/artemis</module>
+        <module>integrations/camel</module>
     </modules>
 
     <scm>
@@ -116,6 +117,7 @@
         <!-- versions of dependencies -->
         <version.org.apache.activemq.artemis-server>2.51.0</version.org.apache.activemq.artemis-server>
         <version.org.jolokia.server-core>2.4.3</version.org.jolokia.server-core>
+        <version.org.slf4j>2.0.17</version.org.slf4j>
 
         <!-- versions of test dependencies -->
         <version.org.junit.jupiter>5.14.0</version.org.junit.jupiter>
@@ -141,6 +143,12 @@
                 <groupId>org.apache.artemis</groupId>
                 <artifactId>artemis-cli</artifactId>
                 <version>${version.org.apache.activemq.artemis-server}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>${version.org.slf4j}</version>
             </dependency>
 
             <dependency>

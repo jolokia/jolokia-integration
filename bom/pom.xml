@@ -42,6 +42,11 @@
                 <artifactId>jolokia-integration-artemis</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.jolokia.integration</groupId>
+                <artifactId>jolokia-integration-camel</artifactId>
+                <version>${project.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 

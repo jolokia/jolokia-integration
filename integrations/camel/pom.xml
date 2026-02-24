@@ -27,12 +27,12 @@
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
-    <artifactId>jolokia-integration-artemis</artifactId>
+    <artifactId>jolokia-integration-camel</artifactId>
     <version>0.8.1-SNAPSHOT</version>
 
     <name>${project.artifactId}</name>
 
-    <description>Jolokia Integration :: Apache Artemis</description>
+    <description>Jolokia Integration :: Apache Camel</description>
 
     <dependencies>
 
@@ -53,14 +53,8 @@
         </dependency>
 
         <dependency>
-            <groupId>org.apache.artemis</groupId>
-            <artifactId>artemis-server</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.artemis</groupId>
-            <artifactId>artemis-cli</artifactId>
-            <scope>provided</scope>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
         </dependency>
 
         <dependency>
