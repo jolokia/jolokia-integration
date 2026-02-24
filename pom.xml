@@ -114,8 +114,8 @@
         <plugin.sonatype.central-publishing-maven-plugin>0.9.0</plugin.sonatype.central-publishing-maven-plugin>
 
         <!-- versions of dependencies -->
-        <version.org.apache.activemq.artemis-server>2.43.0</version.org.apache.activemq.artemis-server>
-        <version.org.jolokia.server-core>2.4.2</version.org.jolokia.server-core>
+        <version.org.apache.activemq.artemis-server>2.51.0</version.org.apache.activemq.artemis-server>
+        <version.org.jolokia.server-core>2.4.3</version.org.jolokia.server-core>
 
         <!-- versions of test dependencies -->
         <version.org.junit.jupiter>5.14.0</version.org.junit.jupiter>
@@ -133,8 +133,13 @@
             </dependency>
 
             <dependency>
-                <groupId>org.apache.activemq</groupId>
+                <groupId>org.apache.artemis</groupId>
                 <artifactId>artemis-server</artifactId>
+                <version>${version.org.apache.activemq.artemis-server}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.artemis</groupId>
+                <artifactId>artemis-cli</artifactId>
                 <version>${version.org.apache.activemq.artemis-server}</version>
             </dependency>
 
@@ -302,12 +307,12 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <source>11</source>
-                    <target>11</target>
-                    <release>11</release>
-                    <testSource>11</testSource>
-                    <testTarget>11</testTarget>
-                    <testRelease>11</testRelease>
+                    <source>17</source>
+                    <target>17</target>
+                    <release>17</release>
+                    <testSource>17</testSource>
+                    <testTarget>17</testTarget>
+                    <testRelease>17</testRelease>
                 </configuration>
             </plugin>
             <!-- Maven Packaging types/tools -->

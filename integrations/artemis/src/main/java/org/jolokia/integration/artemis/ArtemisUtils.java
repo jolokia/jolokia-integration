@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 Jolokia Team
+ * Copyright 2026 Jolokia Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,9 @@
 package org.jolokia.integration.artemis;
 
 import java.lang.reflect.Field;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.activemq.artemis.api.config.ActiveMQDefaultConfiguration;
 import org.apache.activemq.artemis.core.server.ActiveMQServer;
@@ -25,6 +27,154 @@ import org.apache.activemq.artemis.core.server.management.GuardInvocationHandler
 import org.apache.activemq.artemis.core.server.management.JMXAccessControlList;
 
 public class ArtemisUtils {
+
+    // MBean operations of org.apache.activemq.artemis.core.management.impl.AddressControlImpl
+    static Set<String> addressOperations = Set.of(
+            "block",
+            "clearDuplicateIdCache",
+            "filter",
+            "password",
+            "pause",
+            "persist",
+            "purge",
+            "resume",
+            "schedulePageCleanup",
+            "unblock"
+    );
+
+    // Java methods for MBean attributes of org.apache.activemq.artemis.core.management.impl.AddressControlImpl
+    static Set<String> addressAttributes = Set.of(
+            "getAddressLimitPercent",
+            "getAddressSize",
+            "getAddress",
+            "getAllQueueNames",
+            "getBindingNames",
+            "getCurrentDuplicateIdCacheSize",
+            "getId",
+            "getMaxPageReadBytes",
+            "getMaxPageReadMessages",
+            "getMessageCount",
+            "getNumberOfBytesPerPage",
+            "getNumberOfMessages",
+            "getNumberOfPages",
+            "getPrefetchPageBytes",
+            "getPrefetchPageMessages",
+            "getQueueCount",
+            "getQueueNames",
+            "getRemoteQueueNames",
+            "getRolesAsJSON",
+            "getRoles",
+            "getRoutedMessageCount",
+            "getRoutingTypesAsJSON",
+            "getRoutingTypes",
+            "getUnRoutedMessageCount",
+            "isAutoCreated",
+            "isBlockedViaManagement",
+            "isInternal",
+            "isPaging",
+            "isPaused",
+            "isRetroactiveResource",
+            "isTemporary"
+    );
+
+    // MBean operations of org.apache.activemq.artemis.core.management.impl.QueueControlImpl
+    static Set<String> queueOperations = Set.of(
+            "browse",
+            "countMessages",
+            "disable",
+            "enable",
+            "filter",
+            "flushExecutor",
+            "groupByProperty",
+            "groupID",
+            "listConsumersAsJSON",
+            "listDeliveringMessages",
+            "listDeliveringMessagesAsJSON",
+            "listGroupsAsJSON",
+            "listMessageCounter",
+            "listMessageCounterAsHTML",
+            "listMessageCounterHistory",
+            "listMessageCounterHistoryAsHTML",
+            "listScheduledMessages",
+            "listScheduledMessagesAsJSON",
+            "messageCount",
+            "messageID",
+            "newPriority",
+            "otherQueueName",
+            "pageSize",
+            "password",
+            "pause",
+            "peekFirstMessageAsJSON",
+            "peekFirstScheduledMessageAsJSON",
+            "persist",
+            "rejectDuplicates",
+            "removeAllMessages",
+            "resetAllGroups",
+            "resetMessageCounter",
+            "resetMessagesAcknowledged",
+            "resetMessagesAdded",
+            "resetMessagesExpired",
+            "resetMessagesKilled",
+            "resume",
+            "retryMessages",
+            "targetQueue"
+    );
+
+    // Java methods for MBean attributes of org.apache.activemq.artemis.core.management.impl.QueueControlImpl
+    static Set<String> queueAttributes = Set.of(
+            "getAcknowledgeAttempts",
+            "getAddress",
+            "getConsumerCount",
+            "getConsumersBeforeDispatch",
+            "getDeadLetterAddress",
+            "getDelayBeforeDispatch",
+            "getDeliveringCount",
+            "getDeliveringSize",
+            "getDurableDeliveringCount",
+            "getDurableDeliveringSize",
+            "getDurableMessageCount",
+            "getDurablePersistentSize",
+            "getDurableScheduledCount",
+            "getDurableScheduledSize",
+            "getExpiryAddress",
+            "getFilter",
+            "getFirstMessageAge",
+            "getFirstMessageAsJSON",
+            "getFirstMessageTimestamp",
+            "getGroupBuckets",
+            "getGroupCount",
+            "getGroupFirstKey",
+            "getID",
+            "getLastValueKey",
+            "getMaxConsumers",
+            "getMessageCount",
+            "getMessagesAcknowledged",
+            "getMessagesAdded",
+            "getMessagesExpired",
+            "getMessagesKilled",
+            "getName",
+            "getPersistentSize",
+            "getPreparedTransactionMessageCount",
+            "getRingSize",
+            "getRoutingType",
+            "getScheduledCount",
+            "getScheduledSize",
+            "getUser",
+            "isAutoDelete",
+            "isConfigurationManaged",
+            "isDurable",
+            "isEnabled",
+            "isExclusive",
+            "isGroupRebalancePauseDispatch",
+            "isGroupRebalance",
+            "isInternalQueue",
+            "isLastValue",
+            "isPaused",
+            "isPersistedPause",
+            "isPurgeOnNoConsumers",
+            "isRetroactiveResource",
+            "isTemporary"
+    );
 
     private ArtemisUtils() {
     }
